@@ -49,6 +49,8 @@ The security rules stop anyone from making themselves admin from the app.
 ```bash
 npm install
 npm start             # opens in Expo Go: scan the QR code with it
+npm run tunnel        # same, when the phone can't reach the PC on Wi-Fi (needs `npx expo login`
+                      # or EXPO_TOKEN, and the same account signed in to Expo Go)
 npx tsc --noEmit      # typecheck
 ```
 

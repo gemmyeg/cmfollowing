@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react';
 import {
   ActivityIndicator,
+  Keyboard,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
   type TextInputProps,
 } from 'react-native';
@@ -20,8 +22,13 @@ export const colors = {
   danger: '#CF222E',
 };
 
+/** Tapping outside a field closes the keyboard. */
 export function Screen({ children }: { children: ReactNode }) {
-  return <View style={styles.screen}>{children}</View>;
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.screen}>{children}</View>
+    </TouchableWithoutFeedback>
+  );
 }
 
 export function ScrollScreen({ children }: { children: ReactNode }) {
@@ -29,7 +36,11 @@ export function ScrollScreen({ children }: { children: ReactNode }) {
     <ScrollView
       style={{ backgroundColor: colors.background }}
       contentContainerStyle={styles.scroll}
+      // Tapping outside a field or dragging the page closes the keyboard, and the page can
+      // scroll above it so the save button stays reachable.
       keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      automaticallyAdjustKeyboardInsets
     >
       {children}
     </ScrollView>
@@ -56,7 +67,12 @@ export function Field({ label, ...props }: TextInputProps & { label: string }) {
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} placeholderTextColor={colors.muted} {...props} />
+      <TextInput
+        style={styles.input}
+        placeholderTextColor={colors.muted}
+        returnKeyType="done"
+        {...props}
+      />
     </View>
   );
 }

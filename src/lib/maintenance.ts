@@ -44,9 +44,24 @@ export type DueInfo = {
   dueAt: number | null;
   remainingKm: number | null;
   remainingDays: number | null;
+  /** Estimated date the item is due: the earlier of dueAt and when dueKm should be reached. */
+  predictedAt: number | null;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Used until a car has two readings at least a week apart (about 15,000 km a year). */
+export const DEFAULT_KM_PER_DAY = 40;
+
+export function kmPerDay(
+  car: Pick<Car, 'currentKm' | 'currentKmAt' | 'initialKm' | 'initialKmAt'>,
+): number {
+  if (car.initialKm == null || car.initialKmAt == null) return DEFAULT_KM_PER_DAY;
+  const days = (car.currentKmAt - car.initialKmAt) / DAY_MS;
+  const km = car.currentKm - car.initialKm;
+  if (days < 7 || km <= 0) return DEFAULT_KM_PER_DAY;
+  return km / days;
+}
 
 function addMonths(ts: number, months: number): number {
   const d = new Date(ts);
@@ -55,7 +70,9 @@ function addMonths(ts: number, months: number): number {
 }
 
 /** Works out when an item is next due, by km and/or by date, whichever comes first. */
-export function dueInfo(item: MaintenanceItem, car: Pick<Car, 'currentKm'>, now = Date.now()): DueInfo {
+type CarKm = Pick<Car, 'currentKm' | 'currentKmAt' | 'initialKm' | 'initialKmAt'>;
+
+export function dueInfo(item: MaintenanceItem, car: CarKm, now = Date.now()): DueInfo {
   const dueKm =
     item.intervalKm != null && item.lastDoneKm != null ? item.lastDoneKm + item.intervalKm : null;
   const dueAt =
@@ -73,7 +90,13 @@ export function dueInfo(item: MaintenanceItem, car: Pick<Car, 'currentKm'>, now 
       (remainingDays != null && remainingDays <= SOON_DAYS);
     status = overdue ? 'overdue' : soon ? 'soon' : 'ok';
   }
-  return { status, dueKm, dueAt, remainingKm, remainingDays };
+
+  const kmDate =
+    remainingKm != null ? car.currentKmAt + (remainingKm / kmPerDay(car)) * DAY_MS : null;
+  const candidates = [dueAt, kmDate].filter((d): d is number => d != null);
+  const predictedAt = candidates.length ? Math.min(...candidates) : null;
+
+  return { status, dueKm, dueAt, remainingKm, remainingDays, predictedAt };
 }
 
 const STATUS_ORDER: Record<DueStatus, number> = { overdue: 0, soon: 1, ok: 2, unknown: 3 };

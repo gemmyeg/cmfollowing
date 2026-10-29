@@ -34,6 +34,9 @@ export type Car = {
   /** Latest odometer reading in km. */
   currentKm: number;
   currentKmAt: number;
+  /** First reading, used with the latest one to estimate km driven per day. */
+  initialKm?: number;
+  initialKmAt?: number;
   /** uids of the users this car is assigned to. */
   assignedUserIds: string[];
   createdBy: string;

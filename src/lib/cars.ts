@@ -17,7 +17,14 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { db } from '@/lib/firebase';
 import { RECOMMENDED_ITEMS } from '@/lib/maintenance';
-import type { Car, MaintenanceItem, UserProfile } from '@/lib/types';
+import type {
+  Car,
+  MaintenanceItem,
+  Photo,
+  ServiceItemDone,
+  ServiceRecord,
+  UserProfile,
+} from '@/lib/types';
 
 function requireDb() {
   if (!db) throw new Error('firebase-not-configured');
@@ -168,4 +175,129 @@ export function useItemsForCars(carIds: string[]): Record<string, MaintenanceIte
     return () => unsubs.forEach((u) => u());
   }, [key]);
   return byCar;
+}
+
+export function useServices(carId: string): Live<ServiceRecord[]> {
+  return useLiveQuery<ServiceRecord>(
+    () => (db ? query(collection(db, 'cars', carId, 'services'), orderBy('date', 'desc')) : null),
+    [carId],
+  );
+}
+
+export function usePhotos(carId: string, photoIds: string[]): Record<string, Photo> {
+  const [photos, setPhotos] = useState<Record<string, Photo>>({});
+  const key = photoIds.join(',');
+  useEffect(() => {
+    if (!db || photoIds.length === 0) return;
+    const firestore = db;
+    const unsubs = photoIds.map((id) =>
+      onSnapshot(doc(firestore, 'cars', carId, 'photos', id), (snap) => {
+        if (snap.exists()) setPhotos((p) => ({ ...p, [id]: { ...(snap.data() as Photo), id } }));
+      }),
+    );
+    return () => unsubs.forEach((u) => u());
+  }, [carId, key]);
+  return photos;
+}
+
+/** Services of several cars, for the dashboard's spending totals. */
+export function useServicesForCars(carIds: string[]): Record<string, ServiceRecord[]> {
+  const [byCar, setByCar] = useState<Record<string, ServiceRecord[]>>({});
+  const key = carIds.join(',');
+  useEffect(() => {
+    if (!db) return;
+    const firestore = db;
+    setByCar({});
+    const unsubs = carIds.map((carId) =>
+      onSnapshot(collection(firestore, 'cars', carId, 'services'), (snap) =>
+        setByCar((prev) => ({
+          ...prev,
+          [carId]: snap.docs.map((d) => ({ ...(d.data() as ServiceRecord), id: d.id })),
+        })),
+      ),
+    );
+    return () => unsubs.forEach((u) => u());
+  }, [key]);
+  return byCar;
+}
+
+export type ServiceItemInput = {
+  item: MaintenanceItem;
+  cost: number;
+  notes: string;
+  /** Data URIs of photos to attach. */
+  photos: string[];
+};
+
+export type ServiceInput = {
+  km: number;
+  date: number;
+  items: ServiceItemInput[];
+  workshop: string;
+  notes: string;
+  odometerPhoto: string | null;
+};
+
+/**
+ * Logs a service in one batch: the record, its photos, each item's new "last done",
+ * and the car's mileage. With no items it just updates the mileage.
+ */
+export async function logService(car: Car, input: ServiceInput, uid: string) {
+  const db = requireDb();
+  const carRef = doc(db, 'cars', car.id);
+  const batch = writeBatch(db);
+  const now = Date.now();
+
+  const addPhoto = (dataUri: string) => {
+    const ref = doc(collection(carRef, 'photos'));
+    const photo: Omit<Photo, 'id'> = { dataUri, createdBy: uid, createdAt: now };
+    batch.set(ref, photo);
+    return ref.id;
+  };
+
+  if (input.items.length > 0) {
+    const items: ServiceItemDone[] = input.items.map(({ item, cost, notes, photos }) => ({
+      itemId: item.id,
+      key: item.key,
+      name: item.name,
+      cost,
+      ...(notes.trim() ? { notes: notes.trim() } : {}),
+      ...(photos.length ? { photoIds: photos.map(addPhoto) } : {}),
+    }));
+    const record: Omit<ServiceRecord, 'id'> = {
+      km: input.km,
+      date: input.date,
+      currency: 'EGP',
+      items,
+      totalCost: items.reduce((sum, i) => sum + i.cost, 0),
+      createdBy: uid,
+      ...(input.workshop.trim() ? { workshop: input.workshop.trim() } : {}),
+      ...(input.notes.trim() ? { notes: input.notes.trim() } : {}),
+      ...(input.odometerPhoto ? { odometerPhotoId: addPhoto(input.odometerPhoto) } : {}),
+    };
+    batch.set(doc(collection(carRef, 'services')), record);
+
+    for (const { item } of input.items) {
+      batch.update(doc(carRef, 'items', item.id), { lastDoneKm: input.km, lastDoneAt: input.date });
+    }
+  }
+
+  // Only move the odometer forward; an old service logged late must not lower it.
+  if (input.km > car.currentKm) {
+    batch.update(carRef, { currentKm: input.km, currentKmAt: now });
+  }
+  await batch.commit();
+}
+
+export async function deleteService(carId: string, service: ServiceRecord) {
+  const db = requireDb();
+  const carRef = doc(db, 'cars', carId);
+  const batch = writeBatch(db);
+  const photoIds = [
+    ...service.items.flatMap((i) => i.photoIds ?? []),
+    ...(service.odometerPhotoId ? [service.odometerPhotoId] : []),
+  ];
+  for (const id of photoIds) batch.delete(doc(carRef, 'photos', id));
+  batch.delete(doc(carRef, 'services', service.id));
+  await batch.commit();
 }

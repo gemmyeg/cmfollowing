@@ -1,3 +1,4 @@
+import { reloadAppAsync } from 'expo';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Switch, Text, View } from 'react-native';
@@ -19,7 +20,12 @@ export default function Settings() {
   async function choose(lng: Language) {
     if (i18n.language === lng) return;
     const needsRestart = await setLanguage(lng);
-    if (needsRestart) Alert.alert(t('settings.restartTitle'), t('settings.restartBody'));
+    // Right-to-left layout only switches after a reload.
+    if (needsRestart) {
+      Alert.alert(t('settings.restartTitle'), t('settings.restartBody'), [
+        { text: 'OK', onPress: () => reloadAppAsync().catch(() => {}) },
+      ]);
+    }
   }
 
   return (

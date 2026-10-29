@@ -17,6 +17,8 @@ export default function AppLayout() {
       <Stack.Screen name="cars/[id]/index" options={{ title: t('car.details') }} />
       <Stack.Screen name="cars/[id]/edit" options={{ title: t('car.edit') }} />
       <Stack.Screen name="cars/[id]/items/[itemId]" options={{ title: t('item.edit') }} />
+      <Stack.Screen name="cars/[id]/service" options={{ title: t('service.log') }} />
+      <Stack.Screen name="cars/[id]/services/[serviceId]" options={{ title: t('service.details') }} />
     </Stack>
   );
 }

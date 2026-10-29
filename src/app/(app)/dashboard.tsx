@@ -5,25 +5,30 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { dueSummary, StatusBadge } from '@/components/maintenance';
 import { Muted, ScrollScreen, Section, colors } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { useCars, useItemsForCars } from '@/lib/cars';
+import { useCars, useItemsForCars, useServicesForCars } from '@/lib/cars';
 import { summarize } from '@/lib/dashboard';
 import { itemName } from '@/lib/maintenance';
+import { formatEgp } from '@/lib/money';
 
 /** Admin overview of every car: counts and the items that need attention. */
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isAdmin } = useAuth();
   const cars = useCars();
-  const itemsByCar = useItemsForCars(cars.data.map((c) => c.id));
+  const carIds = cars.data.map((c) => c.id);
+  const itemsByCar = useItemsForCars(carIds);
+  const servicesByCar = useServicesForCars(carIds);
 
   if (!isAdmin) return <Redirect href="/" />;
-  const s = summarize(cars.data, itemsByCar);
+  const s = summarize(cars.data, itemsByCar, servicesByCar);
 
   const tiles = [
     { label: t('dashboard.cars'), value: s.cars, color: colors.text },
     { label: t('dashboard.carsNeedingService'), value: s.carsNeedingService, color: colors.text },
     { label: t('dashboard.overdue'), value: s.overdue, color: colors.danger },
     { label: t('dashboard.soon'), value: s.soon, color: '#9A6700' },
+    { label: t('dashboard.spentMonth'), value: formatEgp(s.spentMonth, i18n.language), color: colors.text },
+    { label: t('dashboard.spentYear'), value: formatEgp(s.spentYear, i18n.language), color: colors.text },
   ];
 
   return (

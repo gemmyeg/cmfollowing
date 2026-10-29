@@ -3,14 +3,22 @@
 A mobile app (Android and iOS) to profile cars and their owners, follow each car's
 maintenance schedule, and get notified when an item is due. Arabic and English.
 
-## Features (planned)
+## Features
 
-1. **Foundation** (done): accounts (email/password and Gmail), admin/user roles, Arabic and English with RTL.
-2. **Cars**: car and owner profile, editable maintenance items with a lifetime in km and/or months,
-   cars assigned to users. Admins see every car and a dashboard; users only see their assigned cars.
-3. **Notifications**: predicted due dates from the car's average daily km.
-4. **Service log**: photograph the odometer to update the km, tick the items done, with the cost of
-   each item in EGP and notes.
+- **Accounts**: email/password or Gmail. Roles: an **admin** sees and manages every car and has a
+  dashboard; a **user** only sees the cars assigned to them.
+- **Cars**: car and owner profile with a photo, assigned to one or more users.
+- **Recommended maintenance**: 17 built-in items with typical km and/or month intervals, editable
+  per car, plus custom items. Each item shows OK / due soon / overdue.
+- **Reminders**: km per day is estimated from the odometer readings to predict each due date.
+  Notifications a week before, on the due day, every morning while overdue, and a weekly nudge to
+  update the mileage.
+- **Service log**: photograph the odometer (the km is read on the device), tick what was done, and
+  add the cost of each item in EGP, notes and photos. History per car.
+- **Dashboard** (admin): cars needing service, overdue and due-soon items, money spent this month and year.
+- Arabic and English, right-to-left aware.
+
+Photos are shrunk and stored in Firestore, so the free Firebase (Spark) plan is enough.
 
 ## Setup
 
@@ -28,7 +36,8 @@ In <https://console.cloud.google.com> (same project) > **APIs & Services > Crede
 client id already exists (Firebase made it). Create an **Android** and an **iOS** OAuth client id using
 the bundle id `com.gemmyeg.carmaintenance`, and fill in the `EXPO_PUBLIC_GOOGLE_*` values in `.env`.
 
-Gmail sign-in needs a development build (it does not work inside Expo Go). Email/password works in Expo Go.
+Gmail sign-in and reading the odometer from a photo need a development build (they do not work
+inside Expo Go). Everything else works in Expo Go; there you type the km by hand.
 
 ### 3. Make yourself admin
 
@@ -43,8 +52,9 @@ npx expo start        # scan the QR code with Expo Go
 npx tsc --noEmit      # typecheck
 ```
 
-Development build (needed for Gmail sign-in and background notifications):
+Installable build (needed for Gmail sign-in and odometer reading). Needs a free Expo account:
 
 ```bash
-npx eas-cli@latest build --profile development --platform android
+npx eas-cli@latest build --profile development --platform android   # for developing
+npx eas-cli@latest build --profile preview --platform android       # an APK to share with family
 ```

@@ -91,14 +91,14 @@ export function PhotoField({ value, onChange, label }: PhotoFieldProps) {
           <Button
             title={t('car.takePhoto')}
             variant="secondary"
-            onPress={async () => onChange((await pickPhoto('camera', 512)) ?? value)}
+            onPress={async () => onChange((await pickPhoto('camera', 512))?.dataUri ?? value)}
           />
         </View>
         <View style={{ flex: 1 }}>
           <Button
             title={t('car.choosePhoto')}
             variant="secondary"
-            onPress={async () => onChange((await pickPhoto('library', 512)) ?? value)}
+            onPress={async () => onChange((await pickPhoto('library', 512))?.dataUri ?? value)}
           />
         </View>
       </View>

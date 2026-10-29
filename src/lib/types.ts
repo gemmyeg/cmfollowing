@@ -61,6 +61,8 @@ export type Currency = 'EGP';
 
 export type ServiceItemDone = {
   itemId: string;
+  /** Copied from the item so the record still reads right if the item is renamed or deleted. */
+  key: string | null;
   name: string;
   /** Cost in piasters (1 EGP = 100). */
   cost: number;
@@ -78,7 +80,7 @@ export type ServiceRecord = {
   totalCost: number;
   workshop?: string;
   notes?: string;
-  odometerPhotoUrl?: string;
+  odometerPhotoId?: string;
   createdBy: string;
 };
 

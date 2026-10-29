@@ -9,7 +9,8 @@ export default function AppLayout() {
   const { t } = useTranslation();
   useMaintenanceReminders();
   return (
-    <Stack>
+    // Newer iOS versions draw the header see-through over the content unless told not to.
+    <Stack screenOptions={{ headerTransparent: false }}>
       <Stack.Screen name="index" options={{ title: t('home.title') }} />
       <Stack.Screen name="dashboard" options={{ title: t('dashboard.title') }} />
       <Stack.Screen name="settings" options={{ title: t('settings.title') }} />

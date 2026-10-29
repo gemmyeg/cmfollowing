@@ -5,6 +5,7 @@
  * cars/{carId}                     Car (visible to admins and to the uids in assignedUserIds)
  * cars/{carId}/items/{itemId}      MaintenanceItem (what to service and how often)
  * cars/{carId}/services/{id}       ServiceRecord (one visit, with the items done and their cost)
+ * cars/{carId}/photos/{id}         Photo (optional photos attached to items done)
  */
 
 /** Admins see and manage every car; users only see cars assigned to them. */
@@ -26,6 +27,8 @@ export type Car = {
   year: number;
   plate: string;
   color?: string;
+  /** Small JPEG data URI used as the car's profile picture. */
+  photo?: string | null;
   ownerName: string;
   ownerPhone?: string;
   /** Latest odometer reading in km. */
@@ -59,6 +62,7 @@ export type ServiceItemDone = {
   /** Cost in piasters (1 EGP = 100). */
   cost: number;
   notes?: string;
+  photoIds?: string[];
 };
 
 export type ServiceRecord = {
@@ -73,4 +77,12 @@ export type ServiceRecord = {
   notes?: string;
   odometerPhotoUrl?: string;
   createdBy: string;
+};
+
+export type Photo = {
+  id: string;
+  /** JPEG data URI. */
+  dataUri: string;
+  createdBy: string;
+  createdAt: number;
 };

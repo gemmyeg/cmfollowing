@@ -36,7 +36,7 @@ service cloud.firestore {
       allow create, delete: if isAdmin();
       allow update: if isAdmin()
         || (request.auth.uid in resource.data.assignedUserIds
-            && onlyChanges(['currentKm', 'currentKmAt']));
+            && onlyChanges(['currentKm', 'currentKmAt', 'photo']));
 
       match /items/{itemId} {
         allow read: if isAdmin() || isAssigned(carId);
@@ -50,6 +50,14 @@ service cloud.firestore {
         allow create: if isAdmin()
           || (isAssigned(carId) && request.resource.data.createdBy == request.auth.uid);
         allow update, delete: if isAdmin()
+          || (isAssigned(carId) && resource.data.createdBy == request.auth.uid);
+      }
+
+      match /photos/{photoId} {
+        allow read: if isAdmin() || isAssigned(carId);
+        allow create: if isAdmin()
+          || (isAssigned(carId) && request.resource.data.createdBy == request.auth.uid);
+        allow delete: if isAdmin()
           || (isAssigned(carId) && resource.data.createdBy == request.auth.uid);
       }
     }

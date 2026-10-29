@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import {
   ActivityIndicator,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -23,6 +24,22 @@ export function Screen({ children }: { children: ReactNode }) {
   return <View style={styles.screen}>{children}</View>;
 }
 
+export function ScrollScreen({ children }: { children: ReactNode }) {
+  return (
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.scroll}
+      keyboardShouldPersistTaps="handled"
+    >
+      {children}
+    </ScrollView>
+  );
+}
+
+export function Section({ children }: { children: ReactNode }) {
+  return <Text style={styles.section}>{children}</Text>;
+}
+
 export function Title({ children }: { children: ReactNode }) {
   return <Text style={styles.title}>{children}</Text>;
 }
@@ -41,6 +58,22 @@ export function Field({ label, ...props }: TextInputProps & { label: string }) {
       <Text style={styles.label}>{label}</Text>
       <TextInput style={styles.input} placeholderTextColor={colors.muted} {...props} />
     </View>
+  );
+}
+
+type CheckRowProps = { label: string; sub?: string; checked: boolean; onToggle: () => void };
+
+export function CheckRow({ label, sub, checked, onToggle }: CheckRowProps) {
+  return (
+    <Pressable onPress={onToggle} style={styles.checkRow}>
+      <View style={[styles.checkBox, checked && styles.checkBoxOn]}>
+        {checked && <Text style={{ color: '#fff', fontWeight: '700' }}>✓</Text>}
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.label}>{label}</Text>
+        {sub ? <Text style={styles.muted}>{sub}</Text> : null}
+      </View>
+    </Pressable>
   );
 }
 
@@ -76,10 +109,23 @@ export function Button({ title, onPress, loading, variant = 'primary' }: ButtonP
 
 const styles = StyleSheet.create({
   screen: { flex: 1, padding: 20, gap: 12, backgroundColor: colors.background },
+  scroll: { padding: 20, gap: 12, paddingBottom: 48 },
+  section: { fontSize: 18, fontWeight: '700', color: colors.text, marginTop: 12, textAlign: 'left' },
   title: { fontSize: 26, fontWeight: '700', color: colors.text, textAlign: 'left' },
   muted: { fontSize: 15, color: colors.muted, textAlign: 'left' },
   error: { fontSize: 14, color: colors.danger, textAlign: 'left' },
   field: { gap: 6 },
+  checkRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 6 },
+  checkBox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkBoxOn: { backgroundColor: colors.primary },
   label: { fontSize: 14, fontWeight: '600', color: colors.text, textAlign: 'left' },
   input: {
     borderWidth: 1,

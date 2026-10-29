@@ -6,6 +6,12 @@ const en = {
     loading: 'Loading…',
     error: 'Something went wrong',
   },
+  picker: {
+    choose: 'Choose',
+    search: 'Search',
+    searchOrType: 'Search or type a new one',
+    useCustom: 'Use "{{value}}"',
+  },
   auth: {
     signInTitle: 'Sign in',
     signUpTitle: 'Create account',
@@ -66,6 +72,10 @@ const en = {
     notFound: 'This car was not found or is not assigned to you.',
     noneAssigned: 'No cars are assigned to you yet. Ask the admin to assign one.',
     invalid: 'Please enter the make, model, plate, owner name, a valid year and km.',
+    chooseMakeFirst: 'Choose the make first',
+    chooseModelFirst: 'Choose the model first',
+    modelYears: '{{from}} – {{to}}',
+    modelYearsCurrent: 'Since {{from}}',
   },
   item: {
     new: 'Add item',

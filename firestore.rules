@@ -1,0 +1,57 @@
+rules_version = '2';
+
+// Admins see and manage every car. A normal user only sees the cars assigned to them,
+// and may update the mileage, mark items as done, and log services for those cars.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isAssigned(carId) {
+      return signedIn()
+        && request.auth.uid in get(/databases/$(database)/documents/cars/$(carId)).data.assignedUserIds;
+    }
+
+    function onlyChanges(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+
+    match /users/{uid} {
+      allow read: if request.auth.uid == uid || isAdmin();
+      // New accounts can never make themselves admin.
+      allow create: if request.auth.uid == uid && request.resource.data.role == 'user';
+      allow update: if (request.auth.uid == uid && request.resource.data.role == resource.data.role)
+                    || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /cars/{carId} {
+      allow read: if isAdmin() || request.auth.uid in resource.data.assignedUserIds;
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (request.auth.uid in resource.data.assignedUserIds
+            && onlyChanges(['currentKm', 'currentKmAt']));
+
+      match /items/{itemId} {
+        allow read: if isAdmin() || isAssigned(carId);
+        allow create, delete: if isAdmin();
+        allow update: if isAdmin()
+          || (isAssigned(carId) && onlyChanges(['lastDoneKm', 'lastDoneAt']));
+      }
+
+      match /services/{serviceId} {
+        allow read: if isAdmin() || isAssigned(carId);
+        allow create: if isAdmin()
+          || (isAssigned(carId) && request.resource.data.createdBy == request.auth.uid);
+        allow update, delete: if isAdmin()
+          || (isAssigned(carId) && resource.data.createdBy == request.auth.uid);
+      }
+    }
+  }
+}

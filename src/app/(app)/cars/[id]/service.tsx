@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { StatusBadge } from '@/components/maintenance';
-import { Button, CheckRow, ErrorText, Field, Muted, Screen, ScrollScreen, Section, colors } from '@/components/ui';
+import { Button, CheckRow, ErrorText, Field, Muted, Screen, ScrollScreen, Section, colors, fonts } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { logService, useCar, useItems } from '@/lib/cars';
 import { dueInfo, itemName, sortByUrgency } from '@/lib/maintenance';
@@ -243,5 +243,5 @@ const styles = StyleSheet.create({
   itemOn: { borderColor: colors.primary },
   thumbs: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   thumb: { width: 72, height: 72, borderRadius: 8 },
-  total: { fontSize: 18, fontWeight: '700', color: colors.text, textAlign: 'left' },
+  total: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
 });

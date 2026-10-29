@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 
-import { Button, Muted, Screen, ScrollScreen, Section, colors } from '@/components/ui';
+import { Button, Muted, Screen, ScrollScreen, Section, colors, fonts } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { deleteService, usePhotos, useServices } from '@/lib/cars';
 import { itemName } from '@/lib/maintenance';
@@ -78,7 +78,7 @@ export default function ServiceDetails() {
 }
 
 const styles = StyleSheet.create({
-  heading: { fontSize: 20, fontWeight: '700', color: colors.text, textAlign: 'left' },
+  heading: { fontSize: 20, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
   odometer: { width: '100%', aspectRatio: 4 / 3, borderRadius: 10 },
   item: {
     padding: 12,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.card,
   },
-  itemName: { fontSize: 16, fontWeight: '600', color: colors.text, textAlign: 'left' },
+  itemName: { fontSize: 16, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
   thumbs: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   photo: { width: 140, height: 105, borderRadius: 8 },
 });

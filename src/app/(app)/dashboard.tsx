@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { dueSummary, StatusBadge } from '@/components/maintenance';
-import { Muted, ScrollScreen, Section, colors } from '@/components/ui';
+import { Muted, ScrollScreen, Section, colors, fonts } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { useCars, useItemsForCars, useServicesForCars } from '@/lib/cars';
 import { summarize } from '@/lib/dashboard';
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     gap: 4,
   },
-  tileValue: { fontSize: 28, fontWeight: '700', textAlign: 'left' },
+  tileValue: { fontSize: 28, fontFamily: fonts.bold, textAlign: 'left' },
   tileLabel: { fontSize: 13, color: colors.muted, textAlign: 'left' },
   row: {
     flexDirection: 'row',
@@ -86,5 +86,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  rowTitle: { fontSize: 16, fontWeight: '600', color: colors.text, textAlign: 'left' },
+  rowTitle: { fontSize: 16, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
 });

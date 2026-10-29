@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Switch, Text, View } from 'react-native';
 
-import { Button, Muted, Screen, Title, colors } from '@/components/ui';
+import { Button, Muted, Screen, Title, colors, fonts } from '@/components/ui';
 import { setLanguage, type Language } from '@/i18n';
 import { useAuth } from '@/lib/auth';
 import { notificationsEnabled, setNotificationsEnabled } from '@/lib/notifications';
@@ -44,7 +44,7 @@ export default function Settings() {
       </View>
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12 }}>
-        <Text style={{ flex: 1, fontSize: 18, fontWeight: '700', color: colors.text, textAlign: 'left' }}>
+        <Text style={{ flex: 1, fontSize: 18, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' }}>
           {t('settings.notifications')}
         </Text>
         <Switch

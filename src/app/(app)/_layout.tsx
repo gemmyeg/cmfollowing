@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { stackScreenOptions } from '@/components/ui';
 import { useCars, useItemsForCars } from '@/lib/cars';
 import { listenForTaps, rescheduleReminders } from '@/lib/notifications';
 
@@ -9,9 +10,8 @@ export default function AppLayout() {
   const { t } = useTranslation();
   useMaintenanceReminders();
   return (
-    // Newer iOS versions draw the header see-through over the content unless told not to.
-    <Stack screenOptions={{ headerTransparent: false }}>
-      <Stack.Screen name="index" options={{ title: t('home.title') }} />
+    <Stack screenOptions={stackScreenOptions}>
+      <Stack.Screen name="index" options={{ title: t('home.title'), headerShown: false }} />
       <Stack.Screen name="dashboard" options={{ title: t('dashboard.title') }} />
       <Stack.Screen name="settings" options={{ title: t('settings.title') }} />
       <Stack.Screen name="cars/new" options={{ title: t('car.new') }} />

@@ -48,7 +48,7 @@ The security rules stop anyone from making themselves admin from the app.
 
 ```bash
 npm install
-npx expo start        # scan the QR code with Expo Go
+npm start             # opens in Expo Go: scan the QR code with it
 npx tsc --noEmit      # typecheck
 ```
 

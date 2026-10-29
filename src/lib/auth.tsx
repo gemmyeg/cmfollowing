@@ -118,10 +118,12 @@ export function useAuth(): AuthState {
   return ctx;
 }
 
-/** The Firebase error code, shown next to the generic message so an unexpected failure can be traced. */
+/** The Firebase error code (or the message, when there is none), shown next to the generic message
+ * so an unexpected failure can be traced. */
 export function authErrorCode(error: unknown): string | null {
-  const code = (error as { code?: string })?.code;
-  return code && authErrorKey(error) === 'common.error' ? code : null;
+  if (authErrorKey(error) !== 'common.error') return null;
+  const { code, message } = (error ?? {}) as { code?: string; message?: string };
+  return code || message || String(error);
 }
 
 /** Maps Firebase error codes to translation keys. */

@@ -8,6 +8,12 @@ const ar: Translations = {
     loading: 'جارٍ التحميل…',
     error: 'حدث خطأ ما',
   },
+  picker: {
+    choose: 'اختر',
+    search: 'بحث',
+    searchOrType: 'ابحث أو اكتب اسمًا جديدًا',
+    useCustom: 'استخدم "{{value}}"',
+  },
   auth: {
     signInTitle: 'تسجيل الدخول',
     signUpTitle: 'إنشاء حساب',
@@ -68,6 +74,10 @@ const ar: Translations = {
     notFound: 'هذه السيارة غير موجودة أو غير مسندة إليك.',
     noneAssigned: 'لا توجد سيارات مسندة إليك بعد. اطلب من المدير إسناد سيارة لك.',
     invalid: 'من فضلك أدخل الماركة والموديل واللوحة واسم المالك وسنة وكيلومترات صحيحة.',
+    chooseMakeFirst: 'اختر الماركة أولًا',
+    chooseModelFirst: 'اختر الموديل أولًا',
+    modelYears: '{{from}} – {{to}}',
+    modelYearsCurrent: 'من {{from}}',
   },
   item: {
     new: 'إضافة بند',

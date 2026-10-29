@@ -1,8 +1,10 @@
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PhotoField } from '@/components/maintenance';
+import { PickerField, type PickerOption } from '@/components/PickerField';
 import { Button, CheckRow, ErrorText, Field, Muted, ScrollScreen, Section } from '@/components/ui';
+import { CAR_CATALOG, findMake, yearsFor } from '@/lib/carCatalog';
 import { useUsers, type CarInput } from '@/lib/cars';
 import { RECOMMENDED_ITEMS } from '@/lib/maintenance';
 import type { Car } from '@/lib/types';
@@ -20,7 +22,7 @@ const toggle = (list: string[], value: string) =>
   list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 
 export function CarForm({ initial, showRecommended, submitLabel, onSubmit, footer }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const users = useUsers();
   const [make, setMake] = useState(initial?.make ?? '');
   const [model, setModel] = useState(initial?.model ?? '');
@@ -35,6 +37,46 @@ export function CarForm({ initial, showRecommended, submitLabel, onSubmit, foote
   const [itemKeys, setItemKeys] = useState(RECOMMENDED_ITEMS.map((r) => r.key));
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const arabic = i18n.language === 'ar';
+  const makeOptions = useMemo<PickerOption[]>(
+    () =>
+      CAR_CATALOG.map((m) => ({
+        value: m.name,
+        label: arabic ? m.nameAr : m.name,
+        sub: arabic ? m.name : m.nameAr,
+      })),
+    [arabic],
+  );
+  const modelOptions = useMemo<PickerOption[]>(
+    () =>
+      (findMake(make)?.models ?? []).map((m) => ({
+        value: m.name,
+        label: m.name,
+        sub: m.to
+          ? t('car.modelYears', { from: m.from, to: m.to })
+          : t('car.modelYearsCurrent', { from: m.from }),
+      })),
+    [make, t],
+  );
+  const yearOptions = useMemo<PickerOption[]>(
+    () => yearsFor(make, model).map((y) => ({ value: String(y), label: String(y) })),
+    [make, model],
+  );
+
+  // Each choice narrows the next one, so clear what no longer fits.
+  function chooseMake(value: string) {
+    setMake(value);
+    if (findMake(value) && !findMake(value)?.models.some((m) => m.name === model)) {
+      setModel('');
+      setYear('');
+    }
+  }
+
+  function chooseModel(value: string) {
+    setModel(value);
+    if (year && !yearsFor(make, value).includes(Number(year))) setYear('');
+  }
 
   async function submit() {
     const yearNum = Number(year);
@@ -76,9 +118,29 @@ export function CarForm({ initial, showRecommended, submitLabel, onSubmit, foote
       <PhotoField label={t('car.photo')} value={photo} onChange={setPhoto} />
 
       <Section>{t('car.details')}</Section>
-      <Field label={t('car.make')} value={make} onChangeText={setMake} />
-      <Field label={t('car.model')} value={model} onChangeText={setModel} />
-      <Field label={t('car.year')} value={year} onChangeText={setYear} keyboardType="number-pad" />
+      <PickerField
+        label={t('car.make')}
+        value={make}
+        options={makeOptions}
+        onChange={chooseMake}
+        allowCustom
+      />
+      <PickerField
+        label={t('car.model')}
+        value={model}
+        options={modelOptions}
+        onChange={chooseModel}
+        disabledHint={make ? undefined : t('car.chooseMakeFirst')}
+        allowCustom
+      />
+      <PickerField
+        label={t('car.year')}
+        value={year}
+        options={yearOptions}
+        onChange={setYear}
+        disabledHint={model ? undefined : t('car.chooseModelFirst')}
+        keyboardType="number-pad"
+      />
       <Field label={t('car.plate')} value={plate} onChangeText={setPlate} />
       <Field label={t('car.color')} value={color} onChangeText={setColor} />
       <Field label={t('car.currentKm')} value={km} onChangeText={setKm} keyboardType="number-pad" />

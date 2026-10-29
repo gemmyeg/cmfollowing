@@ -35,7 +35,8 @@
         {
           "cameraPermission": "Used to photograph the odometer to update the car mileage."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "scheme": "carmaintenance",
     "extra": {

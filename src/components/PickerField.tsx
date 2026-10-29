@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors } from '@/components/ui';
+import { colors, fonts } from '@/components/ui';
 
 export type PickerOption = { value: string; label: string; sub?: string };
 
@@ -119,19 +119,19 @@ export function PickerField({
 
 const styles = StyleSheet.create({
   field: { gap: 6 },
-  label: { fontSize: 14, fontWeight: '600', color: colors.text, textAlign: 'left' },
+  label: { fontSize: 14, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
   input: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
     backgroundColor: colors.card,
   },
   disabled: { opacity: 0.6 },
-  value: { flex: 1, fontSize: 16, color: colors.text, textAlign: 'left' },
+  value: { flex: 1, fontSize: 16, fontFamily: fonts.regular, color: colors.text, textAlign: 'left' },
   chevron: { fontSize: 14, color: colors.muted, marginStart: 8 },
   sheet: { flex: 1, backgroundColor: colors.card },
   header: {
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  title: { fontSize: 20, fontWeight: '700', color: colors.text },
-  close: { fontSize: 16, color: colors.primary },
+  title: { fontSize: 20, fontFamily: fonts.bold, color: colors.text },
+  close: { fontSize: 16, fontFamily: fonts.medium, color: colors.primary },
   search: {
     marginHorizontal: 20,
     marginBottom: 8,
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 16,
+    fontFamily: fonts.regular,
     color: colors.text,
     textAlign: 'left',
   },
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
   },
-  rowText: { fontSize: 16, color: colors.text, textAlign: 'left' },
-  selected: { fontWeight: '700', color: colors.primary },
-  sub: { fontSize: 13, color: colors.muted, marginTop: 2, textAlign: 'left' },
+  rowText: { fontSize: 16, fontFamily: fonts.regular, color: colors.text, textAlign: 'left' },
+  selected: { fontFamily: fonts.bold, color: colors.primary },
+  sub: { fontSize: 13, fontFamily: fonts.regular, color: colors.muted, marginTop: 2, textAlign: 'left' },
 });

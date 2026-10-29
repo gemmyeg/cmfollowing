@@ -12,14 +12,36 @@ import {
   type TextInputProps,
 } from 'react-native';
 
+/** "Egyptian warm" theme: sand background, deep teal, terracotta for what is overdue. */
 export const colors = {
-  primary: '#1F6FEB',
-  text: '#1B1F24',
-  muted: '#5B6470',
-  border: '#D0D7DE',
-  background: '#F6F8FA',
-  card: '#FFFFFF',
-  danger: '#CF222E',
+  primary: '#0F5C63',
+  primarySoft: '#DCEFEF',
+  text: '#1F1A14',
+  muted: '#6B5F50',
+  border: '#E7DCC8',
+  background: '#F6F1E7',
+  card: '#FFFDF8',
+  danger: '#B5462A',
+  plateBlue: '#1E5AA8',
+};
+
+/** Header and background for every stack, so screens share the theme. */
+export const stackScreenOptions = {
+  // Newer iOS versions draw the header see-through over the content unless told not to.
+  headerTransparent: false,
+  headerShadowVisible: false,
+  headerStyle: { backgroundColor: '#F6F1E7' },
+  headerTintColor: '#0F5C63',
+  headerTitleStyle: { fontFamily: 'ReadexPro_600SemiBold', color: '#1F1A14' },
+  contentStyle: { backgroundColor: '#F6F1E7' },
+};
+
+/** Readex Pro, loaded in the root layout. Use these instead of fontWeight. */
+export const fonts = {
+  regular: 'ReadexPro_400Regular',
+  medium: 'ReadexPro_500Medium',
+  semibold: 'ReadexPro_600SemiBold',
+  bold: 'ReadexPro_700Bold',
 };
 
 /** Tapping outside a field closes the keyboard. */
@@ -126,10 +148,10 @@ export function Button({ title, onPress, loading, variant = 'primary' }: ButtonP
 const styles = StyleSheet.create({
   screen: { flex: 1, padding: 20, gap: 12, backgroundColor: colors.background },
   scroll: { padding: 20, gap: 12, paddingBottom: 48 },
-  section: { fontSize: 18, fontWeight: '700', color: colors.text, marginTop: 12, textAlign: 'left' },
-  title: { fontSize: 26, fontWeight: '700', color: colors.text, textAlign: 'left' },
-  muted: { fontSize: 15, color: colors.muted, textAlign: 'left' },
-  error: { fontSize: 14, color: colors.danger, textAlign: 'left' },
+  section: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, marginTop: 12, textAlign: 'left' },
+  title: { fontSize: 26, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
+  muted: { fontSize: 14, fontFamily: fonts.regular, color: colors.muted, textAlign: 'left' },
+  error: { fontSize: 14, fontFamily: fonts.medium, color: colors.danger, textAlign: 'left' },
   field: { gap: 6 },
   checkRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 6 },
   checkBox: {
@@ -142,25 +164,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkBoxOn: { backgroundColor: colors.primary },
-  label: { fontSize: 14, fontWeight: '600', color: colors.text, textAlign: 'left' },
+  label: { fontSize: 14, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
   input: {
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     fontSize: 16,
+    fontFamily: fonts.regular,
     backgroundColor: colors.card,
     color: colors.text,
     textAlign: 'left',
   },
   button: {
     backgroundColor: colors.primary,
-    borderRadius: 10,
-    paddingVertical: 13,
+    borderRadius: 16,
+    minHeight: 52,
+    paddingHorizontal: 16,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  buttonSecondary: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.primary },
+  buttonSecondary: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
   buttonLink: { backgroundColor: 'transparent' },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  buttonText: { color: '#fff', fontSize: 16, fontFamily: fonts.semibold },
 });

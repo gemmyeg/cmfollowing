@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
-import { Button, ErrorText, Field, Muted, Screen, Title } from '@/components/ui';
+import { Button, colors, ErrorText, Field, Muted, Screen, Title } from '@/components/ui';
 import { authErrorKey, useAuth } from '@/lib/auth';
 import { isFirebaseConfigured } from '@/lib/firebase';
 
@@ -31,28 +32,30 @@ export default function SignIn() {
   }
 
   return (
-    <Screen>
-      <Title>{t('appName')}</Title>
-      <GoogleSignInButton onError={setError} />
-      <Muted>{t('auth.or')}</Muted>
-      <Field
-        label={t('auth.email')}
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoComplete="email"
-      />
-      <Field
-        label={t('auth.password')}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        autoComplete="password"
-      />
-      {error && <ErrorText>{t(error)}</ErrorText>}
-      <Button title={t('auth.signIn')} onPress={submit} loading={busy} />
-      <Button title={t('auth.noAccount')} variant="link" onPress={() => router.push('/sign-up')} />
-    </Screen>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: colors.background }}>
+      <Screen>
+        <Title>{t('appName')}</Title>
+        <GoogleSignInButton onError={setError} />
+        <Muted>{t('auth.or')}</Muted>
+        <Field
+          label={t('auth.email')}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
+        />
+        <Field
+          label={t('auth.password')}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          autoComplete="password"
+        />
+        {error && <ErrorText>{t(error)}</ErrorText>}
+        <Button title={t('auth.signIn')} onPress={submit} loading={busy} />
+        <Button title={t('auth.noAccount')} variant="link" onPress={() => router.push('/sign-up')} />
+      </Screen>
+    </SafeAreaView>
   );
 }

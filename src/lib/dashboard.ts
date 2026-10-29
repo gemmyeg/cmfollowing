@@ -1,5 +1,5 @@
 import { dueInfo, sortByUrgency, type DueInfo, type DueStatus } from '@/lib/maintenance';
-import type { Car, MaintenanceItem } from '@/lib/types';
+import type { Car, MaintenanceItem, ServiceRecord } from '@/lib/types';
 
 export type DueRow = { car: Car; item: MaintenanceItem; due: DueInfo };
 
@@ -15,7 +15,18 @@ export function worstStatus(car: Car, items: MaintenanceItem[]): DueStatus {
   return worst;
 }
 
-export function summarize(cars: Car[], itemsByCar: Record<string, MaintenanceItem[]>) {
+export function summarize(
+  cars: Car[],
+  itemsByCar: Record<string, MaintenanceItem[]>,
+  servicesByCar: Record<string, ServiceRecord[]> = {},
+  now = new Date(),
+) {
+  const services = cars.flatMap((c) => servicesByCar[c.id] ?? []);
+  const yearStart = new Date(now.getFullYear(), 0, 1).getTime();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const spent = (from: number) =>
+    services.filter((s) => s.date >= from).reduce((sum, s) => sum + s.totalCost, 0);
+
   const rows: DueRow[] = cars.flatMap((car) =>
     (itemsByCar[car.id] ?? []).map((item) => ({ car, item, due: dueInfo(item, car) })),
   );
@@ -25,6 +36,8 @@ export function summarize(cars: Car[], itemsByCar: Record<string, MaintenanceIte
     overdue: rows.filter((r) => r.due.status === 'overdue').length,
     soon: rows.filter((r) => r.due.status === 'soon').length,
     carsNeedingService: new Set(attention.map((r) => r.car.id)).size,
+    spentYear: spent(yearStart),
+    spentMonth: spent(monthStart),
     attention,
   };
 }

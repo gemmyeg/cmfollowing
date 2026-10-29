@@ -1,20 +1,22 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Linking, Text, View } from 'react-native';
+import { Linking, Pressable, Text, View } from 'react-native';
 
 import { CarAvatar, ItemRow } from '@/components/maintenance';
 import { Button, Muted, Screen, ScrollScreen, Section, Title, colors } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
-import { useCar, useItems, useUsers } from '@/lib/cars';
+import { useCar, useItems, useServices, useUsers } from '@/lib/cars';
 import { dueInfo, sortByUrgency } from '@/lib/maintenance';
+import { formatEgp } from '@/lib/money';
 
 export default function CarDetails() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { isAdmin } = useAuth();
   const car = useCar(id);
   const items = useItems(id);
   const users = useUsers();
+  const services = useServices(id);
 
   if (car.loading) return <Screen><Muted>{t('common.loading')}</Muted></Screen>;
   if (!car.data) return <Screen><Muted>{t('car.notFound')}</Muted></Screen>;
@@ -49,6 +51,22 @@ export default function CarDetails() {
           <Title>{`${c.make} ${c.model} ${c.year}`}</Title>
           <Muted>{c.plate}{c.color ? ` · ${c.color}` : ''}</Muted>
           <Muted>{t('car.km', { value: c.currentKm.toLocaleString() })}</Muted>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        <View style={{ flex: 1 }}>
+          <Button
+            title={t('service.log')}
+            onPress={() => router.push({ pathname: '/cars/[id]/service', params: { id } })}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Button
+            title={t('service.updateKm')}
+            variant="secondary"
+            onPress={() => router.push({ pathname: '/cars/[id]/service', params: { id, mode: 'km' } })}
+          />
         </View>
       </View>
 
@@ -89,6 +107,37 @@ export default function CarDetails() {
           }
         />
       )}
+
+      <Section>{t('service.history')}</Section>
+      {services.data.length === 0 && !services.loading && <Muted>{t('service.noHistory')}</Muted>}
+      {services.data.map((s) => (
+        <Pressable
+          key={s.id}
+          onPress={() =>
+            router.push({ pathname: '/cars/[id]/services/[serviceId]', params: { id, serviceId: s.id } })
+          }
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: colors.border,
+            backgroundColor: colors.card,
+            gap: 2,
+          }}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>
+              {new Date(s.date).toLocaleDateString(i18n.language)}
+            </Text>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>
+              {formatEgp(s.totalCost, i18n.language)}
+            </Text>
+          </View>
+          <Muted>
+            {`${t('car.km', { value: s.km.toLocaleString() })} · ${t('service.itemsCount', { count: s.items.length })}`}
+          </Muted>
+        </Pressable>
+      ))}
     </ScrollScreen>
   );
 }

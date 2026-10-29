@@ -16,11 +16,11 @@ maintenance schedule, and get notified when an item is due. Arabic and English.
 
 ### 1. Firebase
 
-1. Create a project at <https://console.firebase.google.com>.
+1. Project: `vmfollowing` at <https://console.firebase.google.com/project/vmfollowing>.
 2. **Authentication > Sign-in method**: enable **Email/Password** and **Google**.
 3. **Firestore Database**: create a database, then paste `firestore.rules` into the **Rules** tab and publish.
-4. **Project settings > Your apps**: add a **Web app** and copy its config.
-5. Copy `.env.example` to `.env` and fill in the `EXPO_PUBLIC_FIREBASE_*` values.
+4. The app is already configured for the `vmfollowing` project (`src/lib/firebase.ts`). To use another
+   project, copy `.env.example` to `.env` and fill in the `EXPO_PUBLIC_FIREBASE_*` values.
 
 ### 2. Gmail sign-in
 

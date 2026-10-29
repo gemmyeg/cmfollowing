@@ -67,10 +67,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!user || !db) return;
-    return onSnapshot(doc(db, 'users', user.uid), (snap) => {
-      setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
-      setProfileUid(user.uid);
-    });
+    const firestore = db;
+    return onSnapshot(
+      doc(firestore, 'users', user.uid),
+      (snap) => {
+        setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
+        setProfileUid(user.uid);
+        // A sign-up whose profile write failed (e.g. rules not published yet) is completed here.
+        if (!snap.exists()) ensureProfile(firestore, user).catch(() => {});
+      },
+      // Without this the app would wait on the splash screen forever.
+      () => {
+        setProfile(null);
+        setProfileUid(user.uid);
+      },
+    );
   }, [user]);
 
   const value: AuthState = {
@@ -107,6 +118,12 @@ export function useAuth(): AuthState {
   return ctx;
 }
 
+/** The Firebase error code, shown next to the generic message so an unexpected failure can be traced. */
+export function authErrorCode(error: unknown): string | null {
+  const code = (error as { code?: string })?.code;
+  return code && authErrorKey(error) === 'common.error' ? code : null;
+}
+
 /** Maps Firebase error codes to translation keys. */
 export function authErrorKey(error: unknown): string {
   const code = (error as { code?: string; message?: string })?.code;
@@ -121,6 +138,15 @@ export function authErrorKey(error: unknown): string {
       return 'auth.emailInUse';
     case 'auth/weak-password':
       return 'auth.passwordTooShort';
+    case 'auth/operation-not-allowed':
+    case 'auth/configuration-not-found':
+      return 'auth.providerDisabled';
+    case 'permission-denied':
+      return 'auth.rulesMissing';
+    case 'auth/network-request-failed':
+      return 'auth.network';
+    case 'auth/too-many-requests':
+      return 'auth.tooManyRequests';
     default:
       return 'common.error';
   }

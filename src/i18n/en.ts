@@ -24,6 +24,12 @@ const en = {
     passwordTooShort: 'Password must be at least 6 characters.',
     invalidCredentials: 'Email or password is incorrect.',
     emailInUse: 'This email is already registered.',
+    providerDisabled:
+      'Email sign-in is not turned on. In the Firebase console, enable Email/Password under Authentication > Sign-in method.',
+    rulesMissing:
+      'The database refused access. In the Firebase console, create the Firestore database and publish firestore.rules.',
+    network: 'No connection to the server. Check the internet and try again.',
+    tooManyRequests: 'Too many attempts. Wait a few minutes and try again.',
     firebaseMissing:
       'Firebase is not configured yet. Add your Firebase keys to the .env file and restart the app.',
   },

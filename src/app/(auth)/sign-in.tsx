@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 import { Button, colors, ErrorText, Field, Muted, Screen, Title } from '@/components/ui';
-import { authErrorKey, useAuth } from '@/lib/auth';
+import { authErrorCode, authErrorKey, useAuth } from '@/lib/auth';
 import { isFirebaseConfigured } from '@/lib/firebase';
 
 export default function SignIn() {
@@ -16,16 +16,19 @@ export default function SignIn() {
   const [error, setError] = useState<string | null>(
     isFirebaseConfigured ? null : 'auth.firebaseMissing',
   );
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function submit() {
     if (!email || !password) return setError('auth.missingFields');
     setBusy(true);
     setError(null);
+    setErrorCode(null);
     try {
       await signIn(email, password);
     } catch (e) {
       setError(authErrorKey(e));
+      setErrorCode(authErrorCode(e));
     } finally {
       setBusy(false);
     }
@@ -52,7 +55,12 @@ export default function SignIn() {
           secureTextEntry
           autoComplete="password"
         />
-        {error && <ErrorText>{t(error)}</ErrorText>}
+        {error && (
+          <ErrorText>
+            {t(error)}
+            {error === 'common.error' && errorCode ? ` (${errorCode})` : ''}
+          </ErrorText>
+        )}
         <Button title={t('auth.signIn')} onPress={submit} loading={busy} />
         <Button title={t('auth.noAccount')} variant="link" onPress={() => router.push('/sign-up')} />
       </Screen>

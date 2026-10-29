@@ -26,6 +26,12 @@ const ar: Translations = {
     passwordTooShort: 'كلمة المرور يجب ألا تقل عن 6 أحرف.',
     invalidCredentials: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
     emailInUse: 'هذا البريد الإلكتروني مسجّل بالفعل.',
+    providerDisabled:
+      'الدخول بالبريد الإلكتروني غير مفعّل. فعّل Email/Password من Authentication > Sign-in method في Firebase.',
+    rulesMissing:
+      'قاعدة البيانات رفضت الوصول. أنشئ قاعدة Firestore وانشر ملف firestore.rules من Firebase.',
+    network: 'لا يوجد اتصال بالخادم. تأكد من الإنترنت وحاول مرة أخرى.',
+    tooManyRequests: 'محاولات كثيرة. انتظر بضع دقائق وحاول مرة أخرى.',
     firebaseMissing:
       'لم يتم إعداد Firebase بعد. أضف مفاتيح Firebase في ملف ‎.env ثم أعد تشغيل التطبيق.',
   },

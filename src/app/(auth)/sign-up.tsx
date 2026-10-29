@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, ErrorText, Field, Screen } from '@/components/ui';
-import { authErrorKey, useAuth } from '@/lib/auth';
+import { authErrorCode, authErrorKey, useAuth } from '@/lib/auth';
 
 export default function SignUp() {
   const { t } = useTranslation();
@@ -12,6 +12,7 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function submit() {
@@ -19,10 +20,12 @@ export default function SignUp() {
     if (password.length < 6) return setError('auth.passwordTooShort');
     setBusy(true);
     setError(null);
+    setErrorCode(null);
     try {
       await signUp(name, email, password);
     } catch (e) {
       setError(authErrorKey(e));
+      setErrorCode(authErrorCode(e));
     } finally {
       setBusy(false);
     }
@@ -46,7 +49,12 @@ export default function SignUp() {
         secureTextEntry
         autoComplete="new-password"
       />
-      {error && <ErrorText>{t(error)}</ErrorText>}
+      {error && (
+        <ErrorText>
+          {t(error)}
+          {error === 'common.error' && errorCode ? ` (${errorCode})` : ''}
+        </ErrorText>
+      )}
       <Button title={t('auth.signUp')} onPress={submit} loading={busy} />
       <Button title={t('auth.haveAccount')} variant="link" onPress={() => router.back()} />
     </Screen>

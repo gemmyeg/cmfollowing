@@ -103,7 +103,14 @@ export async function createCar(input: CarInput, createdBy: string, itemKeys: st
   const now = Date.now();
   const carRef = doc(collection(db, 'cars'));
   const batch = writeBatch(db);
-  batch.set(carRef, { ...input, currentKmAt: now, createdBy, createdAt: now });
+  batch.set(carRef, {
+    ...input,
+    currentKmAt: now,
+    initialKm: input.currentKm,
+    initialKmAt: now,
+    createdBy,
+    createdAt: now,
+  });
   for (const rec of RECOMMENDED_ITEMS.filter((r) => itemKeys.includes(r.key))) {
     const item: Omit<MaintenanceItem, 'id'> = {
       key: rec.key,

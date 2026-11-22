@@ -139,6 +139,7 @@ const ar: Translations = {
     updateKm: 'تحديث العداد',
     odometer: 'العداد',
     photoOdometer: 'صوّر العداد',
+    uploadOdometer: 'ارفع صورة العداد من الجاليري',
     reading: 'جارٍ قراءة العداد…',
     readOk: 'قرأت {{km}} كم من الصورة. راجعها وصححها إذا لزم.',
     readFailed: 'لم أستطع قراءة الرقم من الصورة. من فضلك اكتب الكيلومترات.',

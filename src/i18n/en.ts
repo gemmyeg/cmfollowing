@@ -137,6 +137,7 @@ const en = {
     updateKm: 'Update km',
     odometer: 'Odometer',
     photoOdometer: 'Photograph the odometer',
+    uploadOdometer: 'Upload an odometer photo',
     reading: 'Reading the odometer…',
     readOk: 'Read {{km}} km from the photo. Check it and correct it if needed.',
     readFailed: 'Could not read the number from the photo. Please type the km.',

@@ -76,8 +76,8 @@ export default function LogService() {
   const selected = rows.filter((r) => entries[r.item.id]?.checked);
   const total = selected.reduce((sum, r) => sum + (parseEgp(entries[r.item.id].cost) ?? 0), 0);
 
-  async function photographOdometer() {
-    const photo = await pickPhoto('camera', 1024);
+  async function odometerFrom(source: 'camera' | 'library') {
+    const photo = await pickPhoto(source, 1024);
     if (!photo || !c) return;
     setOdometerPhoto(photo.dataUri);
     if (!canReadOdometer) return setReadMessage(t('service.readUnavailable'));
@@ -135,7 +135,8 @@ export default function LogService() {
 
       <Section>{t('service.odometer')}</Section>
       {odometerPhoto && <Image source={{ uri: odometerPhoto }} style={styles.odometer} />}
-      <Button title={t('service.photoOdometer')} variant="secondary" onPress={photographOdometer} />
+      <Button title={t('service.photoOdometer')} variant="secondary" onPress={() => odometerFrom('camera')} />
+      <Button title={t('service.uploadOdometer')} variant="secondary" onPress={() => odometerFrom('library')} />
       {reading && <ActivityIndicator />}
       {readMessage && <Muted>{readMessage}</Muted>}
       <Field

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors, fonts } from '@/components/ui';
+import { colors, fonts, textStart } from '@/components/ui';
 
 export type PickerOption = { value: string; label: string; sub?: string };
 
@@ -119,7 +119,7 @@ export function PickerField({
 
 const styles = StyleSheet.create({
   field: { gap: 6 },
-  label: { fontSize: 14, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
+  label: { fontSize: 14, fontFamily: fonts.semibold, color: colors.text, textAlign: textStart },
   input: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
   },
   disabled: { opacity: 0.6 },
-  value: { flex: 1, fontSize: 16, fontFamily: fonts.regular, color: colors.text, textAlign: 'left' },
+  value: { flex: 1, fontSize: 16, fontFamily: fonts.regular, color: colors.text, textAlign: textStart },
   chevron: { fontSize: 14, color: colors.muted, marginStart: 8 },
   sheet: { flex: 1, backgroundColor: colors.card },
   header: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: fonts.regular,
     color: colors.text,
-    textAlign: 'left',
+    textAlign: textStart,
   },
   row: {
     paddingHorizontal: 20,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
   },
-  rowText: { fontSize: 16, fontFamily: fonts.regular, color: colors.text, textAlign: 'left' },
+  rowText: { fontSize: 16, fontFamily: fonts.regular, color: colors.text, textAlign: textStart },
   selected: { fontFamily: fonts.bold, color: colors.primary },
-  sub: { fontSize: 13, fontFamily: fonts.regular, color: colors.muted, marginTop: 2, textAlign: 'left' },
+  sub: { fontSize: 13, fontFamily: fonts.regular, color: colors.muted, marginTop: 2, textAlign: textStart },
 });

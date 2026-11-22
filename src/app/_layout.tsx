@@ -9,7 +9,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 
 import { colors } from '@/components/ui';
 import { initI18n } from '@/i18n';
@@ -32,11 +32,25 @@ export default function RootLayout() {
   if (!ready || (!fontsLoaded && !fontError)) return <Splash />;
 
   return (
-    <AuthProvider>
-      <StatusBar style="auto" />
-      <RootStack />
-    </AuthProvider>
+    <Direction>
+      <AuthProvider>
+        <StatusBar style="auto" />
+        <RootStack />
+      </AuthProvider>
+    </Direction>
   );
+}
+
+/**
+ * In the browser, tells react-native-web the text direction so Arabic reads right to left.
+ * On the phone the direction comes from I18nManager instead.
+ */
+function Direction({ children }: { children: React.ReactNode }) {
+  const { i18n } = useTranslation();
+  if (Platform.OS !== 'web') return <>{children}</>;
+  const dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+  // `dir` is a react-native-web prop that React Native's types do not list.
+  return <View style={{ flex: 1 }} {...({ dir } as object)}>{children}</View>;
 }
 
 function RootStack() {

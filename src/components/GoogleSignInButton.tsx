@@ -26,6 +26,7 @@ type Props = { onError: (key: string) => void };
 /** "Continue with Gmail". The Google hook throws without a client id, so only mount it when set. */
 export function GoogleSignInButton({ onError }: Props) {
   const { t } = useTranslation();
+  if (Platform.OS === 'web') return <WebGoogleButton onError={onError} />;
   if (!platformClientId) {
     return (
       <Button
@@ -66,6 +67,26 @@ function ConfiguredGoogleButton({ onError }: Props) {
       onPress={() => {
         setBusy(true);
         promptAsync();
+      }}
+    />
+  );
+}
+
+/** In the browser Firebase opens Google's sign-in window itself, so no client id is needed. */
+function WebGoogleButton({ onError }: Props) {
+  const { t } = useTranslation();
+  const { signInWithGoogle } = useAuth();
+  const [busy, setBusy] = useState(false);
+  return (
+    <Button
+      title={t('auth.continueWithGoogle')}
+      variant="secondary"
+      loading={busy}
+      onPress={() => {
+        setBusy(true);
+        signInWithGoogle()
+          .catch((e) => onError(authErrorKey(e)))
+          .finally(() => setBusy(false));
       }}
     />
   );

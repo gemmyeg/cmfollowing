@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import {
   ActivityIndicator,
   Keyboard,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,6 +12,12 @@ import {
   View,
   type TextInputProps,
 } from 'react-native';
+
+/**
+ * Text alignment that follows the language: right in Arabic, left in English. On the phone RTL
+ * mirrors 'left'; the browser does not, so the web build uses 'start' (set by <html dir>).
+ */
+export const textStart = (Platform.OS === 'web' ? 'start' : 'left') as 'left';
 
 /** "Egyptian warm" theme: sand background, deep teal, terracotta for what is overdue. */
 export const colors = {
@@ -148,10 +155,10 @@ export function Button({ title, onPress, loading, variant = 'primary' }: ButtonP
 const styles = StyleSheet.create({
   screen: { flex: 1, padding: 20, gap: 12, backgroundColor: colors.background },
   scroll: { padding: 20, gap: 12, paddingBottom: 48 },
-  section: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, marginTop: 12, textAlign: 'left' },
-  title: { fontSize: 26, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
-  muted: { fontSize: 14, fontFamily: fonts.regular, color: colors.muted, textAlign: 'left' },
-  error: { fontSize: 14, fontFamily: fonts.medium, color: colors.danger, textAlign: 'left' },
+  section: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, marginTop: 12, textAlign: textStart },
+  title: { fontSize: 26, fontFamily: fonts.bold, color: colors.text, textAlign: textStart },
+  muted: { fontSize: 14, fontFamily: fonts.regular, color: colors.muted, textAlign: textStart },
+  error: { fontSize: 14, fontFamily: fonts.medium, color: colors.danger, textAlign: textStart },
   field: { gap: 6 },
   checkRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 6 },
   checkBox: {
@@ -164,7 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkBoxOn: { backgroundColor: colors.primary },
-  label: { fontSize: 14, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
+  label: { fontSize: 14, fontFamily: fonts.semibold, color: colors.text, textAlign: textStart },
   input: {
     borderWidth: 1,
     borderColor: colors.border,
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     backgroundColor: colors.card,
     color: colors.text,
-    textAlign: 'left',
+    textAlign: textStart,
   },
   button: {
     backgroundColor: colors.primary,

@@ -1,7 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp } from 'firebase/app';
-import { type Auth, getAuth, getReactNativePersistence, initializeAuth } from 'firebase/auth';
+import { type Auth, getAuth } from 'firebase/auth';
 import { type Firestore, getFirestore } from 'firebase/firestore';
+
+import { createAuth } from '@/lib/firebaseAuth';
 
 // Firebase web config for the vmfollowing project. It is not a secret: access is controlled by
 // Firebase Auth and firestore.rules. EXPO_PUBLIC_FIREBASE_* in .env override it (e.g. for a test project).
@@ -23,9 +24,7 @@ if (isFirebaseConfigured) {
   const firstInit = getApps().length === 0;
   const app = firstInit ? initializeApp(config) : getApp();
   // initializeAuth may only be called once per app; fast refresh re-runs this module.
-  auth = firstInit
-    ? initializeAuth(app, { persistence: getReactNativePersistence(AsyncStorage) })
-    : getAuth(app);
+  auth = firstInit ? createAuth(app) : getAuth(app);
   db = getFirestore(app);
 }
 

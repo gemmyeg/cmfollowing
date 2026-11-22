@@ -60,3 +60,16 @@ Installable build (needed for Gmail sign-in and odometer reading). Needs a free 
 npx eas-cli@latest build --profile development --platform android   # for developing
 npx eas-cli@latest build --profile preview --platform android       # an APK to share with family
 ```
+
+## Web version
+
+The same app runs in the browser at **https://vmfollowing.web.app** (Firebase Hosting, free on the
+Spark plan). On a phone, open it and choose **Add to Home Screen** (Safari: Share button; Chrome:
+menu) to get an app icon that opens full-screen. Gmail sign-in works there without extra setup.
+Reminder notifications and reading the km from the photo are only in the phone app.
+
+To publish a new version (first time only: `npx firebase-tools login`):
+
+```bash
+npm run deploy:web
+```

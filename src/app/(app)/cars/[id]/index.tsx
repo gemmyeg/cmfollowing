@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EgyptPlate } from '@/components/EgyptPlate';
 import { CarAvatar, ItemRow, STATUS_THEME } from '@/components/maintenance';
-import { Muted, Screen, colors, fonts } from '@/components/ui';
+import { Muted, Screen, colors, fonts, textStart } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { useCar, useItems, useServices, useUsers } from '@/lib/cars';
 import { dueInfo, kmPerDay, sortByUrgency, type DueStatus } from '@/lib/maintenance';
@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
   },
   name: { fontSize: 22, fontFamily: fonts.bold, color: colors.text, textAlign: 'center' },
   sub: { fontSize: 13, fontFamily: fonts.regular, color: colors.muted, textAlign: 'center' },
-  groupTitle: { fontSize: 13, fontFamily: fonts.bold, textAlign: 'left' },
-  section: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, marginTop: 8, textAlign: 'left' },
+  groupTitle: { fontSize: 13, fontFamily: fonts.bold, textAlign: textStart },
+  section: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, marginTop: 8, textAlign: textStart },
   addLink: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 44 },
   addText: { fontSize: 14, fontFamily: fonts.semibold, color: colors.primary },
   service: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  serviceDate: { fontSize: 15, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
+  serviceDate: { fontSize: 15, fontFamily: fonts.semibold, color: colors.text, textAlign: textStart },
   serviceCost: { fontSize: 16, fontFamily: fonts.bold, color: colors.primary },
   bar: {
     flexDirection: 'row',

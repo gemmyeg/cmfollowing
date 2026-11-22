@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithCredential,
+  signInWithPopup,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
@@ -24,7 +25,7 @@ type AuthState = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
   /** Signs in with the id token returned by Google (Gmail account). */
-  signInWithGoogle: (idToken: string) => Promise<void>;
+  signInWithGoogle: (idToken?: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -101,7 +102,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     async signInWithGoogle(idToken) {
       const { auth, db } = requireAuth();
-      const cred = await signInWithCredential(auth, GoogleAuthProvider.credential(idToken));
+      // On the web there is no token from the phone: Firebase opens Google's own sign-in window.
+      const cred = idToken
+        ? await signInWithCredential(auth, GoogleAuthProvider.credential(idToken))
+        : await signInWithPopup(auth, new GoogleAuthProvider());
       await ensureProfile(db, cred.user);
     },
     async signOut() {

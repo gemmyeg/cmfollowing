@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getLocales } from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { I18nManager } from 'react-native';
+import { I18nManager, Platform } from 'react-native';
 
 import ar from './ar';
 import en from './en';
@@ -33,6 +33,12 @@ export async function initI18n(): Promise<void> {
 /** React Native only applies a direction change after the app restarts. */
 function applyDirection(lng: Language): boolean {
   const rtl = lng === 'ar';
+  if (Platform.OS === 'web') {
+    // The browser flips the layout at once from <html dir>, so no restart is needed.
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = lng;
+    return false;
+  }
   I18nManager.allowRTL(true);
   if (I18nManager.isRTL === rtl) return false;
   I18nManager.forceRTL(rtl);

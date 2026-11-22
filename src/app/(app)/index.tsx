@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EgyptPlate } from '@/components/EgyptPlate';
 import { dueSummary, STATUS_THEME } from '@/components/maintenance';
-import { Muted, colors, fonts } from '@/components/ui';
+import { Muted, colors, fonts, textStart } from '@/components/ui';
 import { useAuth } from '@/lib/auth';
 import { useCars, useItemsForCars, useServicesForCars } from '@/lib/cars';
 import { summarize } from '@/lib/dashboard';
@@ -165,7 +165,7 @@ function IconButton({ icon, label, onPress }: IconButtonProps) {
 const styles = StyleSheet.create({
   content: { padding: 20, gap: 16, paddingBottom: 48 },
   header: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  greeting: { fontSize: 26, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
+  greeting: { fontSize: 26, fontFamily: fonts.bold, color: colors.text, textAlign: textStart },
   iconButton: {
     width: 44,
     height: 44,
@@ -185,8 +185,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  summaryLabel: { fontSize: 12, fontFamily: fonts.regular, color: colors.muted, textAlign: 'left' },
-  summaryValue: { fontSize: 20, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
+  summaryLabel: { fontSize: 12, fontFamily: fonts.regular, color: colors.muted, textAlign: textStart },
+  summaryValue: { fontSize: 20, fontFamily: fonts.bold, color: colors.text, textAlign: textStart },
   sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   section: { fontSize: 18, fontFamily: fonts.bold, color: colors.text },
   addLink: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 44 },
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-  carName: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, textAlign: 'left' },
+  carName: { fontSize: 18, fontFamily: fonts.bold, color: colors.text, textAlign: textStart },
   segments: { flexDirection: 'row', gap: 3 },
   segment: { flex: 1, height: 8, borderRadius: 4 },
   alert: {
@@ -211,5 +211,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
-  alertText: { flex: 1, fontSize: 13, fontFamily: fonts.semibold, textAlign: 'left' },
+  alertText: { flex: 1, fontSize: 13, fontFamily: fonts.semibold, textAlign: textStart },
 });

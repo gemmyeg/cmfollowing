@@ -16,15 +16,19 @@ const HOUR = 10;
 /** "Due soon" heads-up this many days before the predicted date. */
 const HEADS_UP_DAYS = 7;
 const DAY_MS = 24 * 60 * 60 * 1000;
+/** Scheduled local reminders only exist in the phone app, not in the web version. */
+const supported = Platform.OS !== 'web';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+if (supported) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+}
 
 export async function notificationsEnabled(): Promise<boolean> {
   return (await AsyncStorage.getItem(ENABLED_KEY)) !== 'false';
@@ -32,7 +36,7 @@ export async function notificationsEnabled(): Promise<boolean> {
 
 export async function setNotificationsEnabled(enabled: boolean) {
   await AsyncStorage.setItem(ENABLED_KEY, String(enabled));
-  if (!enabled) await Notifications.cancelAllScheduledNotificationsAsync();
+  if (!enabled && supported) await Notifications.cancelAllScheduledNotificationsAsync();
 }
 
 async function ensurePermission(t: TFunction): Promise<boolean> {
@@ -114,7 +118,7 @@ export async function rescheduleReminders(
   itemsByCar: Record<string, MaintenanceItem[]>,
   t: TFunction,
 ) {
-  if (!(await notificationsEnabled())) return;
+  if (!supported || !(await notificationsEnabled())) return;
   if (!(await ensurePermission(t))) return;
 
   await Notifications.cancelAllScheduledNotificationsAsync();
@@ -147,6 +151,7 @@ export async function rescheduleReminders(
 
 /** Opens the car when a reminder is tapped. Returns an unsubscribe function. */
 export function listenForTaps(): () => void {
+  if (!supported) return () => {};
   const sub = Notifications.addNotificationResponseReceivedListener((response) => {
     const carId = response.notification.request.content.data?.carId;
     if (typeof carId === 'string') router.push({ pathname: '/cars/[id]', params: { id: carId } });

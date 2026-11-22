@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Button, colors, fonts } from '@/components/ui';
+import { Button, colors, fonts, textStart } from '@/components/ui';
 import { dueInfo, itemName, type DueInfo, type DueStatus } from '@/lib/maintenance';
 import { pickPhoto } from '@/lib/photos';
 import type { Car, MaintenanceItem } from '@/lib/types';
@@ -140,8 +140,8 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   rowIcon: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  rowTitle: { fontSize: 15, fontFamily: fonts.semibold, color: colors.text, textAlign: 'left' },
-  rowSub: { fontSize: 12, fontFamily: fonts.regular, color: colors.muted, textAlign: 'left' },
+  rowTitle: { fontSize: 15, fontFamily: fonts.semibold, color: colors.text, textAlign: textStart },
+  rowSub: { fontSize: 12, fontFamily: fonts.regular, color: colors.muted, textAlign: textStart },
   avatarEmpty: { backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
   photo: { width: '100%', aspectRatio: 4 / 3, borderRadius: 14 },
 });
